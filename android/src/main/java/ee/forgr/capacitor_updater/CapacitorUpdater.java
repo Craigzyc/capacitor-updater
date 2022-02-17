@@ -80,6 +80,11 @@ public class CapacitorUpdater {
             byte[] buffer = new byte[8192];
             while ((ze = zis.getNextEntry()) != null) {
                 File file = new File(targetDirectory, ze.getName());
+                String canonicalPath = f.getCanonicalPath();
+                if (!canonicalPath.startsWith(targetDirectory)) {
+                    // SecurityException
+                    throw new SecurityException("Zip Path Traversal Attempt Error");
+                }
                 File dir = ze.isDirectory() ? file : file.getParentFile();
                 if (!dir.isDirectory() && !dir.mkdirs())
                     throw new FileNotFoundException("Failed to ensure directory: " +
